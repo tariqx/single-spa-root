@@ -1,0 +1,68 @@
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: k8-main-ingress
+# spec:
+#   rules:
+#   - host: localhost
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: k8-micro-root-svc
+#             port:
+#               number: 9000
+# - path: /bar
+#   pathType: Prefix
+#   backend:
+#     service:
+#       name: service2
+#       port:
+#         number: 8080
+
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: k8-main-ingress
+#   namespace: default
+#   annotations:
+#     kubernetes.io/ingress.class: "nginx"
+# spec:
+#   - backend:
+#       serviceName: k8-micro-root-svc
+#       servicePort: 9000
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: k8-main-ingress
+  namespace: dev
+  # labels:
+  #   ingres-controller: nginx
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: myapp.com
+      http:
+        paths:
+          - backend:
+              serviceName: k8-micro-root-svc
+              servicePort: 80
+    - host: navbar.myapp.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: k8-micro-navbar-svc
+              servicePort: 80
+    - host: body.myapp.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: k8-micro-body-svc
+              servicePort: 80
